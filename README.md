@@ -30,3 +30,35 @@ Ce projet a été réalisé dans un cadre **académique**, en respectant la stru
 ---
 
 ## 📂 Structure du projet
+Odoo_Event/
+│── addons/
+│ └── tp_gestion_event/
+│ ├── models/
+│ ├── views/
+│ ├── security/
+│ ├── reports/
+│ ├── manifest.py
+│ └── init.py
+│── docker-compose.yml
+│── README.md
+
+
+---
+
+## 🚀 Installation et exécution
+
+### 🔹 Prérequis
+- Docker
+- Docker Compose
+
+### 🔹 Étapes d’installation
+
+1. Cloner le dépôt :
+git clone https://github.com/Inessbounouifa/Odoo_Event.git
+cd Odoo_Event
+2. Lancer les conteneurs Docker :
+docker-compose up -d
+3. Accéder à Odoo via le navigateur :
+http://localhost:8069
+
+
