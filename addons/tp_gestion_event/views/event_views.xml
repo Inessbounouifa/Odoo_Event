@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- ================================================= -->
+    <!-- REPORT PDF -->
+    <!-- ================================================= -->
+
+    <template id="report_tp_event_document">
+    <t t-call="web.external_layout">
+
+        <!-- MAIN OBLIGATOIRE -->
+        <main>
+
+            <t t-foreach="docs" t-as="doc">
+
+                <div class="page">
+                    <h2 style="text-align:center;">Fiche Événement</h2>
+
+                    <table class="table table-sm">
+                        <tr>
+                            <td><strong>Nom</strong></td>
+                            <td><span t-field="doc.name"/></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Responsable</strong></td>
+                            <td><span t-field="doc.responsable"/></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Statut</strong></td>
+                            <td><span t-field="doc.statut"/></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Date début</strong></td>
+                            <td><span t-field="doc.date_debut"/></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Date fin</strong></td>
+                            <td><span t-field="doc.date_fin"/></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Lieu</strong></td>
+                            <td><span t-field="doc.lieu"/></td>
+                        </tr>
+                    </table>
+
+                    <h3>Participants</h3>
+                    <ul>
+                        <t t-foreach="doc.participants_ids" t-as="p">
+                            <li><span t-field="p.name"/></li>
+                        </t>
+                    </ul>
+
+                </div>
+
+            </t>
+
+        </main>
+
+    </t>
+</template>
+
+
+    <record id="action_report_tp_event" model="ir.actions.report">
+        <field name="name">Fiche Événement</field>
+        <field name="model">tp.event</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">tp_gestion_event.report_tp_event_document</field>
+        <field name="report_file">tp_gestion_event.report_tp_event_document</field>
+    </record>
+
+    <!-- ================================================= -->
+    <!-- ACTIONS -->
+    <!-- ================================================= -->
+
+    <record id="action_tp_event" model="ir.actions.act_window">
+        <field name="name">Gestion des événements</field>
+        <field name="res_model">tp.event</field>
+        <field name="view_mode">kanban,tree,form,graph,pivot</field>
+    </record>
+
+    <record id="action_tp_event_stats" model="ir.actions.act_window">
+        <field name="name">Statistiques des événements</field>
+        <field name="res_model">tp.event</field>
+        <field name="view_mode">graph,pivot</field>
+    </record>
+
+    <!-- ================================================= -->
+    <!-- MENUS -->
+    <!-- ================================================= -->
+
+    <menuitem id="menu_tp_event_root" name="Evenements TP"/>
+    <menuitem id="menu_tp_event"
+              parent="menu_tp_event_root"
+              name="Gestion des événements"
+              action="action_tp_event"/>
+
+    <menuitem id="menu_tp_event_stats"
+              parent="menu_tp_event_root"
+              name="Statistiques"
+              action="action_tp_event_stats"/>
+
+    <!-- ================================================= -->
+    <!-- TREE -->
+    <!-- ================================================= -->
+
+    <record id="view_tp_event_tree" model="ir.ui.view">
+        <field name="name">tp.event.tree</field>
+        <field name="model">tp.event</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="responsable"/>
+                <field name="date_debut"/>
+                <field name="lieu"/>
+                <field name="statut"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ================================================= -->
+    <!-- FORM -->
+    <!-- ================================================= -->
+
+    <record id="view_tp_event_form" model="ir.ui.view">
+        <field name="name">tp.event.form</field>
+        <field name="model">tp.event</field>
+        <field name="arch" type="xml">
+            <form>
+
+                <header>
+                    <button name="action_confirmer" type="object"
+                            string="Confirmer"
+                            class="btn-primary"
+                            invisible="statut != 'brouillon'"/>
+
+                    <button name="action_demarrer" type="object"
+                            string="Démarrer"
+                            invisible="statut != 'confirme'"/>
+
+                    <button name="action_terminer" type="object"
+                            string="Terminer"
+                            invisible="statut != 'encours'"/>
+
+                    <button name="%(action_report_tp_event)d"
+                            string="Imprimer"
+                            type="action"/>
+
+                    <field name="statut"
+                           widget="statusbar"
+                           statusbar_visible="brouillon,confirme,encours,termine"/>
+                </header>
+
+                <sheet>
+
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                        <p class="text-muted">
+                            Responsable : <field name="responsable"/>
+                        </p>
+                    </div>
+
+                    <notebook>
+
+                        <page string="Général">
+                            <group col="4">
+                                <group col="2">
+                                    <field name="image" widget="image" class="oe_avatar"/>
+                                </group>
+                                <group col="2">
+                                    <field name="date_debut"/>
+                                    <field name="date_fin"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Description">
+                            <field name="description" nolabel="1"/>
+                        </page>
+
+                        <page string="Participants">
+                            <group>
+                                <field name="participants_ids" widget="many2many_tags"/>
+                                <field name="participants_count" readonly="1"/>
+                            </group>
+                        </page>
+
+                        <page string="Localisation">
+                            <group>
+                                <field name="lieu"/>
+                                <field name="maps_url" widget="url" readonly="1"/>
+                            </group>
+                        </page>
+
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================================================= -->
+    <!-- KANBAN -->
+    <!-- ================================================= -->
+
+    <record id="view_tp_event_kanban" model="ir.ui.view">
+        <field name="name">tp.event.kanban</field>
+        <field name="model">tp.event</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="statut">
+                <field name="name"/>
+                <field name="responsable"/>
+                <field name="date_debut"/>
+                <field name="lieu"/>
+                <field name="statut"/>
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_card">
+                            <strong><field name="name"/></strong>
+                            <div class="text-muted"><field name="responsable"/></div>
+                            <div><field name="lieu"/></div>
+                            <div><field name="date_debut"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ================================================= -->
+<!-- SEARCH (ODOO 17 COMPLIANT) -->
+<!-- ================================================= -->
+
+
+
+
+
+</odoo>
