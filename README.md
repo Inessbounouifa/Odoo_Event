@@ -62,3 +62,36 @@ docker-compose up -d
 http://localhost:8069
 
 
+🔐 Accès Odoo
+
+Base de données : à créer au premier lancement
+
+Utilisateur admin : défini lors de la création de la base
+
+📈 Améliorations réalisées
+
+Organisation claire des formulaires
+
+Ajout de statistiques visuelles
+
+Génération automatique de documents
+
+Navigation améliorée via menus et filtres
+
+Séparation entre événements en cours et terminés
+
+👩‍💻 Auteur
+
+Projet réalisé par Iness Bounouifa
+📍 EMSI – Informatique & Réseaux / MIAGE
+
+📄 Licence
+
+Projet à usage pédagogique.
+
+### ✅ Prochaine étape conseillée
+Une fois le fichier ajouté :
+
+git add README.md
+git commit -m "Add project README"
+git push
